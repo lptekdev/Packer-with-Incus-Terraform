@@ -1,0 +1,32 @@
+## add yourself the AUTH_CERT.crt and AUTH_CERT.key files to the root of the project, the same files to authenticate to the Incus server.
+stages:       # List of stages for jobs, and their order of execution
+- CreatePrepareImage
+
+variables:
+  APP_SOURCE_DIR: "$CI_PROJECT_DIR/"
+  VM_NAME: "ubuntu-template"
+  INCUS_HOST_IP: ""
+  INCUS_NAME: ""
+
+CreatePrepareImage-job:
+  stage: CreatePrepareImage
+  tags: [docker]
+  image: alpine:latest
+  script:
+    - apk add unzip jq curl ansible openssh-keygen xorriso openssh-client git yq incus-client tree
+    - wget https://releases.hashicorp.com/packer/1.15.4/packer_1.15.4_linux_amd64.zip
+    - unzip -o packer_*.zip packer
+    - mv packer /usr/local/bin/
+    - incus remote list
+    - mv AUTH_CERT.crt  /root/.config/incus/client.crt
+    - mv AUTH_CERT.key  /root/.config/incus/client.key
+    - incus remote add {INCUS_NAME} ${INCUS_HOST_IP}:8443 --accept-certificate 
+    - incus remote switch {INCUS_NAME}
+    - incus remote list
+    - cd $APP_SOURCE_DIR
+    - ls -lth
+    - echo "Creating template..."
+    - packer init template.pkr.hcl
+    - PACKER_LOG=1 packer build --debug -var "app_source_dir=$APP_SOURCE_DIR" -var "incus_name=$INCUS_NAME" template.pkr.hcl
+  allow_failure: false
+

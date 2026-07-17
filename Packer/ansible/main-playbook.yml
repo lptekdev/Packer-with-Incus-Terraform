@@ -1,0 +1,15 @@
+---
+- name: Main playbook
+  hosts: default
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Display the hostname
+      debug:
+        msg: "The hostname of the server is {{ ansible_hostname }}"
+        
+    - name: Ensure filesystem changes are flushed to disk
+      ansible.builtin.shell: sync
+      become: yes
+
+
