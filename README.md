@@ -1,4 +1,4 @@
-# Packer with Incus + Terraform
+# Packer with Incus + Terraform + Gitlav pipeline
 
 ## Packer with Incus and Gitlab pipeline
 The Packer folder contains the files for a pipeline in Gitlab that uses Packer to create a golden image in an Incus host.
