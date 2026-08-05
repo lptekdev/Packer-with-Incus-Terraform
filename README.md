@@ -2,7 +2,9 @@
 
 ## Packer with Incus and Gitlab pipeline
 The Packer folder contains the files for a pipeline in Gitlab that uses Packer to create a golden image in an Incus host.
-**The cloud init (user-data and network) is applied based on Default profile in Incus, in the Default project.**
+**The cloud init (user-data and network) is applied based on Default profile in Incus, in the Default project.**  
+
+Teh variable: *init_sleep* is set to 90 seconds, because it's the enough time required for the cloud-init in Incus default profile to finish.
 
 Be aware I'm using "ansible_connection=community.general.incus", for the Ansible Packer provisioner:
 [Incus_Ansible](https://docs.ansible.com/projects/ansible/latest/collections/community/general/incus_connection.html)
